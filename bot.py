@@ -1,13 +1,18 @@
 from object import Object
 from grid import Grid
 from consts import BOT_STR, EMPTY_STR, APPLE_STR
+from typing import Iterator, Callable
+import random
+import copy
 
 
 class Bot:
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, grid: Grid):
         self.x = x
         self.y = y
         self.apple_count = 0
+        self.grid_history: list[Grid] = [copy.deepcopy(grid)]
+        grid.add_object(self.object())
 
     def object(self) -> Object:
         return Object(self.x, self.y, BOT_STR)
@@ -27,6 +32,7 @@ class Bot:
             self.apple_count += 1
             grid[self.y][self.x] = EMPTY_STR
         grid[self.y][self.x] = BOT_STR
+        self.grid_history.append(copy.deepcopy(grid))
 
     def get_position(self) -> tuple[int, int]:
         return (self.x, self.y)
@@ -34,20 +40,17 @@ class Bot:
     def __str__(self):
         return f"Bot({self.x}, {self.y} [{self.apple_count}])"
 
-    # def move_bot(self, x: int, y: int):
-    #     self[previous_y][previous_x] = empty_str
-    #     # wrap around bot location
-    #     if bot.x >= self.width:
-    #         bot.x = 0
-    #     if bot.y >= self.height:
-    #         bot.y = 0
-    #
-    #     if self[bot.y][bot.x] == apple_str:
-    #         bot.apple_count += 1
-    #         self[bot.y][bot.x] = empty_str
-
     def score(self):
         return self.apple_count
 
-    # The following are the only options for the bot to use:
-    # Up / Down / Left / Right
+    def make_best_move(self, grid: Grid):
+        m = random.choice([move for move in self.possible_moves(grid)])
+        m()
+
+    def possible_moves(self, grid: Grid) -> Iterator[Callable]:
+        for (x, y) in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            yield lambda x=x, y=y: self.move(x, y, grid)
+
+    def print_history(self):
+        for grid in self.grid_history:
+            print(grid)
