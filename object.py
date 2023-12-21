@@ -10,3 +10,6 @@ class Object:
 
     def get_position(self):
         return [self.x, self.y]
+
+    def __hash__(self):
+        return hash((self.x, self.y, self.value))

@@ -1,5 +1,8 @@
 from typing import Final
 
-empty_str: Final[str] = "."
-bot_str: Final[str] = "X"
-apple_str: Final[str] = "@"
+GRID_SIZE: Final[int] = 10
+APPLE_COUNT: Final[int] = 10
+
+EMPTY_STR: Final[str] = "."
+BOT_STR: Final[str] = "X"
+APPLE_STR: Final[str] = "@"
